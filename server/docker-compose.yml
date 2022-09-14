@@ -24,8 +24,12 @@ services:
       - "3333:3333"
     volumes:
       - .:/usr/app
+    links:
+      - db_postgresql_esports
     networks:
       - app-network
+    environment:
+      - DATABASE_URL=postgresql://root:docker@db_postgresql_esports:5432/esportsdb?schema=public
 
 networks:
   app-network:
