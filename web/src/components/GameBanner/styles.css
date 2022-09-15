@@ -1,0 +1,15 @@
+.game-banner-content {
+  @apply relative rounded-lg overflow-hidden
+}
+
+.game-banner-details {
+  @apply w-full pt-16 pb-4 px-4 bg-game-gradient absolute bottom-0 left-0 right-0
+}
+
+.game-banner-title {
+  @apply font-bold text-white block
+}
+
+.game-banner-subtitle {
+  @apply text-zinc-300 text-sm block
+}
