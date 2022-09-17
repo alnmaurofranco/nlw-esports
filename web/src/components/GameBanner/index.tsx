@@ -9,7 +9,7 @@ type GameBannerProps = {
 
 const GameBanner: React.FC<GameBannerProps> = ({ title, bannerURL, link, adsCount }: GameBannerProps) => {
   return (
-    <a href={link ?? '#'} className='game-banner-content'>
+    <a href={link ?? '#'} className='game-banner-content hover:animate-pulse delay-500 ease-out'>
       <img src={bannerURL} alt={title} />
 
       <div className='game-banner-details'>

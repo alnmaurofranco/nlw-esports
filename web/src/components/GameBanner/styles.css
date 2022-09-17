@@ -3,7 +3,7 @@
 }
 
 .game-banner-details {
-  @apply w-full pt-16 pb-4 px-4 bg-game-gradient absolute bottom-0 left-0 right-0
+  @apply w-full pt-16 pb-4 px-4 bg-game-gradient absolute bottom-0 left-0 right-0 hover:bg-game-gradient-2
 }
 
 .game-banner-title {
