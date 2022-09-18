@@ -1,6 +1,6 @@
 <h1 align="center"><img src=".github/assets/logo.svg" width="420px" /></h1>
 
-<h2 align="center">Plataforma para encontrar e conectar jogadores para fazerem aquele duozinho maneiro no seu jogo preferido </h2>
+<p align="center">Plataforma para encontrar e conectar jogadores para fazerem aquele duozinho maneiro no seu jogo preferido </p>
 
 ## ✅ Demostração
 
@@ -63,6 +63,7 @@ cd nlw-esports
 ```bash
 cd web && yarn install
 ```
+- Após a instalação, você deve renomear o arquivo `.env.example` para `.env` que se encontra nas raizes dos projetos e modifique a variavel de acordo com a sua configuração.
 
 ### *Executando a aplicação*
 - Após completa todas as instalações, vamos iniciar nossa aplicaçaõ web com o seguinte comando:
@@ -97,7 +98,7 @@ DATABASE_URL="postgresql://root:docker@api-database:5432/esportsdb?schema=public
 ```
 cd mobile && yarn start
 ```
-- Pronto agora a aplicação mobile está no ar também para
+- Pronto agora sua aplicação mobile está disponível para ser acessada
 
 ### 🧪 *Executando os testes*
 A seguir iremos executar os testes da aplicação no backend (server)
@@ -109,12 +110,15 @@ cd server && yarn test
 ## 🪄 Melhorias em desenvolvimento
 
 - **Aplicação WEB**
+  - [] Deploy da aplicação Web
   - [] Adicionar biblioteca para tratar melhor os formularios
   - [] Incluir a autenticação na pagina inicial
+  - [] Incluir pagina de DUOS
 
 - **API**
-  - Adicionar autenticação
-    - [] Autenticar somente com um e-mail válido
+  - [] Deploy do backend
+  - [] Adicionar validação
+  - [] Adicionar autenticação
     - [] Autenticar com provedor do Discord
     - [] Autenticar com provedor da TwitchTV
 ---
