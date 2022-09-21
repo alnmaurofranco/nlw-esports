@@ -14,7 +14,7 @@ const GameContent: React.FC<GameContentProps> = ({ data }: GameContentProps) => 
           key={game.id}
           title={game.title}
           bannerURL={game.bannerURL}
-          adsCount={game._count.announcements}
+          adsCount={game.count}
         />
       ))}
     </div>

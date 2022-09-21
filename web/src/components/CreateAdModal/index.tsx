@@ -32,7 +32,7 @@ const CreateAdModal: React.FC = () => {
       discord: data.discord,
       yearPlaying: Number(data.yearPlaying),
       weekDays: {
-        days: weekDays
+        days: weekDays.map(Number)
       },
       hourStart: data.hourStart,
       hourEnd: data.hourEnd,
