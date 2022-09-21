@@ -4,15 +4,15 @@ import { z } from "zod";
 export default function zodAdapter(schema: z.ZodSchema<any>) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (req.method === "GET") {
-        console.log("GET");
-        req.query = await schema.parseAsync(req.query);
-        req.params = await schema.parseAsync(req.params);
-        next();
+      const params = {
+        ...req.params,
+        ...req.body,
+        ...req.query,
+      };
+      if (schema.safeParse(params).success) {
+        return next();
       } else {
-        console.log("POST");
-        req.body = await schema.parseAsync(req.body);
-        next();
+        await schema.parseAsync(params);
       }
     } catch (error) {
       next(error);
