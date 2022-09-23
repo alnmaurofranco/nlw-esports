@@ -6,7 +6,9 @@ export type AnnouncementProps = {
   name: string;
   yearPlaying: number;
   discord: string;
-  weekDays: unknown;
+  weekDays: {
+    days: number[];
+  };
   hourStart: number;
   hourEnd: number;
   useVoiceChannel: boolean;
@@ -59,6 +61,10 @@ export default class Announcement {
 
   private set useVoiceChannel(value: boolean) {
     this.#props.useVoiceChannel = value;
+  }
+
+  get gameId() {
+    return this.#props.gameId;
   }
 
   get createdAt() {
