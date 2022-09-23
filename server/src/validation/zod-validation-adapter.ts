@@ -1,12 +1,4 @@
-import { z, ZodSchema } from "zod";
-
-// export default async function zodValidationAdapter() {
-//   if (schema.safeParse(params).success) {
-//     return next();
-//   } else {
-//     await schema.parseAsync(params);
-//   }
-// }
+import { ZodSchema } from "zod";
 
 export default class ZodValidation {
   readonly #schema: ZodSchema;
