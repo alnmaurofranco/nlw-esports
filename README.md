@@ -116,11 +116,14 @@ cd server && yarn test
   - [] Incluir pagina de DUOS
 
 - **API**
+  - [x] Arquitetura Limpa/Domain Driven Design/Código Limpo
+  - [] Testes
+  - [x] Adicionar validação
+  - [x] Adicionar autenticação
+    - [x] Adicionar autenticação mágica com e-mail
+    - [x] Autenticar com provedor do Discord
+    - [x] Autenticar com provedor da TwitchTV
   - [] Deploy do backend
-  - [] Adicionar validação
-  - [] Adicionar autenticação
-    - [] Autenticar com provedor do Discord
-    - [] Autenticar com provedor da TwitchTV
 ---
 <h3 align="center">
 
