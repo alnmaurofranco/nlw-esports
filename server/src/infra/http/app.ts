@@ -1,94 +1,105 @@
+import "express-async-errors";
 import cors from "cors";
-import express, { Application, NextFunction, Request, Response } from "express";
-import { z } from "zod";
-import { prisma } from "../../database/prisma";
-import { convertMinutesAmountToHourString } from "../../utils/convert-minutes-to-hour-string";
-import zodAdapter from "../../validation/zod-adapter";
+import express, { Application } from "express";
+import {
+  createAnnouncementSchema,
+  CreateAnnouncementSchema,
+} from "../../application/use-cases/create-announcement/create-announcement-schema";
+import {
+  ListAnnouncementsByGameSchema,
+  listAnnouncementsByGameSchema,
+} from "../../application/use-cases/list-announcements-by-game/list-announcements-by-game-schema";
 import CreateAnnouncementFactory from "../factory/create-announcement-factory";
+import GetAnnouncementByDiscordFactory from "../factory/get-announcement-by-discord-factory";
+import ListAllAnnouncementsFactory from "../factory/list-all-announcements-factory";
 import ListAllGamesFactory from "../factory/list-all-games-factory";
 import ListAnnouncementsByGameFactory from "../factory/list-announcements-by-game-factory";
-
-const createAnnouncementSchema = z.object({
-  name: z.string().min(3).max(50),
-  // discord: z.string().min(3).max(50),
-  // hourStart: z.number().min(0).max(1439),
-  // hourEnd: z.number().min(0).max(1439),
-  useVoiceChannel: z.boolean(),
-  // weekDays: z.array(z.number().min(0).max(6)),
-  // yearPlaying: z.number().min(0).max(50),
-});
-const listAnnouncementsByGameSchema = z.object({
-  gameId: z.string().uuid(),
-});
+import zodErrorMiddleware from "./middleware/zod-error-middleware";
+import zodMiddlewareAdapter from "./middleware/zod-middleware-adapter";
+import { z } from "zod";
+import AxiosHttpClientAdapter from "../adapter/http-client/axios-http-client-adapter";
+import { stringify } from "query-string";
+import { AxiosResponse } from "axios";
+import GotHttpClientAdapter from "../adapter/http-client/got-http-client-adapter";
+import { GotReturn } from "got";
+import {
+  authenticateEmailSchema,
+  AuthenticateEmailSchema,
+} from "../../application/use-cases/authenticate-email/authenticate-email-schema";
+import AuthenticateEmailFactory from "../factory/authenticate-email-factory";
+import isAuthorized from "./middleware/authorized-middleware";
+import {
+  authenticateByDiscordSchema,
+  AuthenticateByDiscordSchema,
+} from "../../application/use-cases/authenticate-by-discord/authenticate-by-discord-schema";
+import AuthenticateByDiscordFactory from "../factory/authenticate-by-discord-factory";
+import AuthenticateByTwitchFactory from "../factory/authenticate-by-twitch-factory";
 
 const app: Application = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.get("/auth/v1/twitch", async (req, res) => {
+  const options = {
+    redirect_uri: process.env.TWITCH_CALLBACK,
+    client_id: process.env.TWITCH_CLIENT_ID,
+    response_type: "code",
+    scope: ["user:edit", "user:read:email"].join(" "),
+  };
+  return res.redirect(
+    `https://id.twitch.tv/oauth2/authorize?${stringify(options)}`
+  );
+});
+app.post(
+  "/auth/v1/account",
+  zodMiddlewareAdapter<AuthenticateEmailSchema>(authenticateEmailSchema),
+  async (request, response) => {
+    return AuthenticateEmailFactory().handle(request, response);
+  }
+);
+app.get("/auth/v1/account/email", isAuthorized, async (request, response) => {
+  const paramsData = {
+    ...request.params,
+    ...request.query,
+  };
+  console.log(paramsData);
+});
+app.get(
+  "/auth/discord/callback",
+  zodMiddlewareAdapter<AuthenticateByDiscordSchema>(
+    authenticateByDiscordSchema
+  ),
+  async (request, response) => {
+    return AuthenticateByDiscordFactory().handle(request, response);
+  }
+);
+app.get("/auth/v1/twitch/callback", async (request, response) => {
+  return AuthenticateByTwitchFactory().handle(request, response);
+});
 app.get("/games", async (request, response) => {
   return ListAllGamesFactory().handle(request, response);
 });
 app.post(
   "/games/:gameId/ads",
-  zodAdapter(createAnnouncementSchema),
+  zodMiddlewareAdapter<CreateAnnouncementSchema>(createAnnouncementSchema),
   async (request, response) => {
     return CreateAnnouncementFactory().handle(request, response);
   }
 );
 app.get(
   "/games/:gameId/ads",
-  zodAdapter(listAnnouncementsByGameSchema),
+  zodMiddlewareAdapter<ListAnnouncementsByGameSchema>(
+    listAnnouncementsByGameSchema
+  ),
   async (request, response) => {
     return ListAnnouncementsByGameFactory().handle(request, response);
   }
 );
-app.get("/ads/:id/discord", async (request, response) => {
-  const { id: announcementId } = request.params;
-  const announcement = await prisma.announcement.findUniqueOrThrow({
-    select: {
-      discord: true,
-    },
-    where: {
-      id: announcementId,
-    },
-  });
-  return response.json(announcement);
+app.get("/ads/:announcementId/discord", async (request, response) => {
+  return GetAnnouncementByDiscordFactory().handle(request, response);
 });
 app.get("/ads", async (request, response) => {
-  const announcements = await prisma.announcement.findMany({
-    select: {
-      id: true,
-      name: true,
-      weekDays: true,
-      useVoiceChannel: true,
-      hourStart: true,
-      hourEnd: true,
-      yearPlaying: true,
-      createdAt: true,
-    },
-  });
-  return response.json(
-    announcements.map((announcement) => ({
-      id: announcement.id,
-      name: announcement.name,
-      weekDays: announcement.weekDays,
-      useVoiceChannel: announcement.useVoiceChannel,
-      hourStart: convertMinutesAmountToHourString(announcement.hourStart),
-      hourEnd: convertMinutesAmountToHourString(announcement.hourEnd),
-      yearPlaying: announcement.yearPlaying,
-      createdAt: announcement.createdAt,
-    }))
-  );
+  return ListAllAnnouncementsFactory().handle(request, response);
 });
-app.use(
-  (error: Error, request: Request, response: Response, next: NextFunction) => {
-    if (error instanceof z.ZodError) {
-      const err = error.errors;
-      return response.status(400).json(err);
-    }
-    return response.status(500).json({
-      message: "Internal server error",
-    });
-  }
-);
+app.use(zodErrorMiddleware());
 export default app;
