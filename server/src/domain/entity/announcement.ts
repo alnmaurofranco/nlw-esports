@@ -1,4 +1,4 @@
-import { randomUUID as uuid } from "node:crypto";
+import Entity from "../../core/domain/entity";
 import { convertMinutesAmountToHourString } from "../../utils/convert-minutes-to-hour-string";
 
 export type AnnouncementProps = {
@@ -15,85 +15,76 @@ export type AnnouncementProps = {
   createdAt?: Date;
 };
 
-export default class Announcement {
-  #id: string;
-  #props: AnnouncementProps;
-
-  get id() {
-    return this.#id;
-  }
-
+export default class Announcement extends Entity<AnnouncementProps> {
   get name() {
-    return this.#props.name;
+    return this.props.name;
   }
 
   get yearPlaying() {
-    return this.#props.yearPlaying;
+    return this.props.yearPlaying;
   }
 
   get discord() {
-    return this.#props.discord;
+    return this.props.discord;
   }
 
   get weekDays() {
-    return this.#props.weekDays;
+    return this.props.weekDays;
   }
 
   get hourStart() {
-    return this.#props.hourStart;
+    return this.props.hourStart;
   }
 
   private set hourStart(value: number) {
-    this.#props.hourStart = value * 60;
+    this.props.hourStart = value * 60;
   }
 
   get hourEnd() {
-    return this.#props.hourEnd;
+    return this.props.hourEnd;
   }
 
   private set hourEnd(value: number) {
-    this.#props.hourEnd = value * 60;
+    this.props.hourEnd = value * 60;
   }
 
   get useVoiceChannel() {
-    return this.#props.useVoiceChannel;
+    return this.props.useVoiceChannel;
   }
 
   private set useVoiceChannel(value: boolean) {
-    this.#props.useVoiceChannel = value;
+    this.props.useVoiceChannel = value;
   }
 
   get gameId() {
-    return this.#props.gameId;
+    return this.props.gameId;
   }
 
   get createdAt() {
-    return this.#props.createdAt;
-  }
-
-  voiceChannelDefault(useVoiceChannel: boolean): boolean {
-    return useVoiceChannel ?? false;
-  }
-
-  createdAtDefault(): Date {
-    return new Date();
+    return this.props.createdAt;
   }
 
   getJSON() {
     return {
-      ...this.#props,
+      ...this.props,
       hourStart: convertMinutesAmountToHourString(this.hourStart),
       hourEnd: convertMinutesAmountToHourString(this.hourEnd),
     };
   }
 
-  constructor(props: AnnouncementProps, id?: string) {
-    this.#id = id ?? uuid();
-    this.#props = {
-      ...props,
-      useVoiceChannel: this.voiceChannelDefault(props.useVoiceChannel),
-      createdAt: props.createdAt ?? this.createdAtDefault(),
-    };
+  private constructor(props: AnnouncementProps, id?: string) {
+    super(
+      {
+        ...props,
+        useVoiceChannel: props.useVoiceChannel ?? false,
+        createdAt: props.createdAt ?? new Date(),
+      },
+      id
+    );
+  }
+
+  static create(props: AnnouncementProps, id?: string) {
+    return new Announcement(props, id);
   }
 
   activeVoiceChannel(): void {

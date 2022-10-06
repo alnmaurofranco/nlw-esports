@@ -4,7 +4,7 @@ import Announcement from "./announcement";
 
 describe("Announcement Domain", () => {
   it("Deve criar um anúncio", () => {
-    const announcement = new Announcement({
+    const announcement = Announcement.create({
       gameId: "id-existing",
       name: "NAMI IS GOD",
       yearPlaying: 8,
@@ -20,7 +20,7 @@ describe("Announcement Domain", () => {
   });
 
   it("Deve criar um anúncio e ativar o voice", () => {
-    const announcement = new Announcement({
+    const announcement = Announcement.create({
       gameId: "id-existing",
       name: "Duo no League of Legends",
       yearPlaying: 8,

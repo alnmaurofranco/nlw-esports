@@ -3,7 +3,7 @@ import Game from "./game";
 
 describe("Game Domain", () => {
   it("Deve criar um game", () => {
-    const game = new Game({
+    const game = Game.create({
       title: "League of Legends",
       bannerURL: "https://www.leagueoflegends.com/pt-br",
     });
@@ -17,7 +17,7 @@ describe("Game Domain", () => {
 
   it("Deve lançar um erro ao criar um game com nome inválido ou vazio", () => {
     expect(() => {
-      return new Game({
+      return Game.create({
         title: "",
         bannerURL: "https://game-non-existing.com.br",
       });
@@ -26,7 +26,7 @@ describe("Game Domain", () => {
 
   it("Deve lançar um erro ao criar um game com o banner url inválido ou vazio", () => {
     expect(() => {
-      return new Game({
+      return Game.create({
         title: "DOTA 2",
         bannerURL: "",
       });
