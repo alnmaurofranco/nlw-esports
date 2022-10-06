@@ -1,3 +1,4 @@
+import TokenManager from "../../../domain/manager/token-manager";
 import { OAuthStrategy } from "../../../domain/strategy/oauth-strategy";
 import { DiscordOAuthStrategyOutput } from "../../../infra/strategy/discord-oauth-strategy-dto";
 import {
@@ -7,9 +8,11 @@ import {
 
 export default class AuthenticateByDiscordUseCase {
   readonly #oauthStrategy: OAuthStrategy;
+  readonly #tokenManager: TokenManager;
 
-  constructor(oauthStrategy: OAuthStrategy) {
+  constructor(oauthStrategy: OAuthStrategy, tokenManager: TokenManager) {
     this.#oauthStrategy = oauthStrategy;
+    this.#tokenManager = tokenManager;
   }
 
   async execute(
@@ -31,10 +34,19 @@ export default class AuthenticateByDiscordUseCase {
     if (!userData) {
       throw new Error("Missing user data");
     }
+    const token = this.#tokenManager.generate(
+      {
+        sub: userData.email,
+        username: userData.username,
+        avatar: userData.avatar,
+      },
+      {
+        audience: "type:access:token:discord",
+        expiresIn: "5m",
+      }
+    );
     return {
-      username: userData.username,
-      avatar: userData.avatar,
-      email: userData.email,
+      access_token: token,
     };
   }
 }

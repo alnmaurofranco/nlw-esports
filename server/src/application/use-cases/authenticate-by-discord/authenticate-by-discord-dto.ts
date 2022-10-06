@@ -3,7 +3,5 @@ export type AuthenticateByDiscordInput = {
 };
 
 export type AuthenticateByDiscordOutput = {
-  username: string;
-  avatar: string;
-  email: string;
+  access_token: string;
 };
