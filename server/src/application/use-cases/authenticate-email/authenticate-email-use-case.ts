@@ -1,3 +1,4 @@
+import TokenManager from "../../../domain/manager/token-manager";
 import MailProvider from "../../../infra/provider/mail-provider/mail-provider";
 import createTokenByEmail from "../../../utils/create-token-by-email";
 import {
@@ -7,9 +8,11 @@ import {
 
 export default class AuthenticateEmailUseCase {
   readonly #mailProvider: MailProvider;
+  readonly #tokenManager: TokenManager;
 
-  constructor(mailProvider: MailProvider) {
+  constructor(mailProvider: MailProvider, tokenManager: TokenManager) {
     this.#mailProvider = mailProvider;
+    this.#tokenManager = tokenManager;
   }
 
   async execute(
@@ -18,7 +21,12 @@ export default class AuthenticateEmailUseCase {
     if (!input.email) {
       throw new Error("E-mail is required");
     }
-    const token = createTokenByEmail(input.email);
+    const date = new Date();
+    date.setHours(date.getHours() + 1);
+    const token = this.#tokenManager.generate({
+      email: input.email,
+      expiresAt: date,
+    });
     const magicLink = `http://localhost:3333/auth/v1/account/email?token=${token}`;
     const mailOptions = {
       to: {
