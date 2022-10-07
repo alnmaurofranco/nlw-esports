@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import Game from "../../../domain/entity/game";
-import GameRepositoryInMemory from "../../../infra/repository/database/in-memory/game-repository-in-memory";
+import GameRepositoryInMemory from "../../../infra/repository/in-memory/game-repository-in-memory";
 import ListAllGamesUseCase from "./list-all-games-use-case";
 
 let gameRepository: GameRepositoryInMemory;
@@ -12,11 +12,11 @@ describe("List all games use case", () => {
     listAllGames = new ListAllGamesUseCase(gameRepository);
   });
   it("should be able to list all games", async () => {
-    const game1 = new Game({
+    const game1 = Game.create({
       title: "Game 1",
       bannerURL: "https://banner1.com",
     });
-    const game2 = new Game({
+    const game2 = Game.create({
       title: "Game 2",
       bannerURL: "https://banner2.com",
     });
@@ -24,5 +24,11 @@ describe("List all games use case", () => {
     await gameRepository.create(game2);
     const output = await listAllGames.execute();
     expect(output).toHaveLength(2);
+  });
+
+  it("should not be able to list all games", async () => {
+    expect(() => listAllGames.execute()).rejects.toThrowError(
+      new Error("No games found")
+    );
   });
 });
