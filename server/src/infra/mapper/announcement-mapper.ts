@@ -3,7 +3,7 @@ import Announcement from "../../domain/entity/announcement";
 
 export default class AnnouncementMapper {
   static toDomain(announcement: AnnouncementPersistence): Announcement {
-    return new Announcement(
+    return Announcement.create(
       {
         name: announcement.name,
         yearPlaying: announcement.yearPlaying,

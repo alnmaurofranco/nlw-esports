@@ -18,7 +18,7 @@ export default class GameMapper {
       title: raw.title,
       bannerURL: raw.bannerURL,
       announcements: raw.announcements.map((announcement) =>
-        new Announcement(
+        Announcement.create(
           {
             name: announcement.name,
             weekDays: announcement.weekDays as {
