@@ -26,7 +26,7 @@ export default class CreateAnnouncementUseCase {
     if (!game) {
       throw new Error("Game does not exists");
     }
-    const announcement = new Announcement({
+    const announcement = Announcement.create({
       gameId: game.id,
       discord: input.discord,
       name: input.name,
