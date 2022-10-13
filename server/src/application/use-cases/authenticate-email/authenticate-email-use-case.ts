@@ -1,6 +1,5 @@
 import TokenManager from "../../../domain/manager/token-manager";
 import MailProvider from "../../../infra/provider/mail-provider/mail-provider";
-import createTokenByEmail from "../../../utils/create-token-by-email";
 import {
   AuthenticateEmailInput,
   AuthenticateEmailOutput,
