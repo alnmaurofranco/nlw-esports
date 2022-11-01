@@ -109,21 +109,14 @@ cd server && yarn test
 
 ## 🪄 Melhorias em desenvolvimento
 
-- **Aplicação WEB**
-  - [] Deploy da aplicação Web
-  - [] Adicionar biblioteca para tratar melhor os formularios
-  - [] Incluir a autenticação na pagina inicial
-  - [] Incluir pagina de DUOS
-
 - **API**
   - [x] Arquitetura Limpa/Domain Driven Design/Código Limpo
-  - [] Testes
+  - [x] Testes
   - [x] Adicionar validação
   - [x] Adicionar autenticação
     - [x] Adicionar autenticação mágica com e-mail
     - [x] Autenticar com provedor do Discord
     - [x] Autenticar com provedor da TwitchTV
-  - [] Deploy do backend
 ---
 <h3 align="center">
 
